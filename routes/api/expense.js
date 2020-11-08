@@ -10,38 +10,44 @@ const {
   getAllExpenses,
   expenseBudget,
 } = require("../../controllers/expense");
-const { protect, isAuth } = require("../../controllers/auth");
+const { protect, isAuth, authToken } = require("../../controllers/auth");
 const { userById } = require("../../controllers/user");
 
 // @route GET /api/expense/:expenseId
 // @desc Get expense route
 // @access Private
-router.get("/:expenseId/:id", protect, isAuth, getExpense);
+router.get("/:expenseId/:id", protect, isAuth, authToken, getExpense);
 
 // @route POST /api/expense/create
 // @desc Create expense route
 // @access Private
-router.post("/create/:id", protect, isAuth, createExpense);
+router.post("/create/:id", protect, isAuth, authToken, createExpense);
 
 // @route PUT /api/expense/:expenseId/:id
 // @desc Update expense route
 // @access Private
-router.put("/:expenseId/:id", protect, isAuth, updateExpense);
+router.put("/:expenseId/:id", protect, isAuth, authToken, updateExpense);
 
 // @route DELETE /api/expense/:expenseId/:id
 // @desc Delete expense route
 // @access Private
-router.delete("/:expenseId/:id", protect, isAuth, deleteExpense);
+router.delete("/:expenseId/:id", protect, isAuth, authToken, deleteExpense);
 
 // @route GET /api/expense/all/expense
 // @desc Get all expense route
 // @access Public
-router.get("/all/expense/:id", protect, isAuth, getAllExpenses);
+router.get("/all/expense/:id", protect, isAuth, authToken, getAllExpenses);
 
 // @route GET /api/expense/all/expense/:id/:budgetId
 // @desc Get all expense based on budget route
 // @access Public
-router.get("/all/expense/:id/:budgetId", protect, isAuth, expenseBudget);
+router.get(
+  "/all/expense/:id/:budgetId",
+  protect,
+  isAuth,
+  authToken,
+  expenseBudget
+);
 
 // @route PARAM id
 // @desc Get User By Id

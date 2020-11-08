@@ -4,6 +4,13 @@ const expressJwt = require("express-jwt");
 const validateRegisterInput = require("../validations/register");
 const validateLoginInput = require("../validations/login");
 
+let refreshTokens = [];
+
+// Generate Access Token
+const generateAccessToken = (user) => {
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "180s" });
+};
+
 // Register User
 exports.register = (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -36,16 +43,17 @@ exports.register = (req, res) => {
             email: user.email,
           };
           // Sign Token
-          const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: 14400,
-          });
+          const accessToken = generateAccessToken(payload);
+          const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN);
+          refreshTokens.push(refreshToken);
           res.cookie("token", token);
           // Return user and token to client
-          const { _id, name, email, role } = user;
+          const { _id, name, email } = user;
           return res.json({
             success: true,
-            user: { _id, name, email, role },
-            token: `Bearer ${token}`,
+            user: { _id, name, email },
+            token: `Bearer ${accessToken}`,
+            refresh: refreshToken,
           });
         })
         .catch((err) => console.log(err));
@@ -75,25 +83,58 @@ exports.login = (req, res) => {
         errors.password = "Incorrect Password";
         return res.status(400).json(errors);
       }
-
+      console.log(user);
       // Generate a token for authentication
       const payload = {
         id: user._id,
         name: user.name,
         email: user.email,
       };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: 14400,
-      });
-      res.cookie("token", token);
+      const accessToken = generateAccessToken(payload);
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN);
+      refreshTokens.push(refreshToken);
+      res.cookie("token", accessToken);
       // Return user and token to client
-      const { _id, name, email, role } = user;
+      const { _id, name, email } = user;
       return res.json({
         success: true,
-        user: { _id, name, email, role },
-        token: `Bearer ${token}`,
+        user: { _id, name, email },
+        token: `Bearer ${accessToken}`,
+        refresh: refreshToken,
       });
     }
+  });
+};
+
+// New Token Generation
+exports.token = (req, res) => {
+  const refreshToken = req.body.token;
+  if (!refreshToken) {
+    return res.status(401).json({
+      errors: "Refresh Token Not Found",
+    });
+  }
+  if (!refreshTokens.includes(refreshToken)) {
+    return res.status(403).json({
+      errors: "Invalid Refresh Token",
+    });
+  }
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
+    if (err) {
+      return res.status(403).json({
+        errors: err,
+      });
+    }
+    const accessToken = generateAccessToken({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+    res.cookie("token", accessToken);
+    return res.json({
+      success: true,
+      token: `Bearer ${accessToken}`,
+    });
   });
 };
 
@@ -114,6 +155,7 @@ exports.protect = expressJwt({
 
 // User Authentication
 exports.isAuth = (req, res, next) => {
+  console.log(req.auth);
   let user = req.profile && req.auth && req.profile._id == req.auth.id;
   if (!user) {
     return res.status(403).json({
@@ -121,4 +163,24 @@ exports.isAuth = (req, res, next) => {
     });
   }
   next();
+};
+
+// Token Authentication
+exports.authToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({
+      errors: "Token expired",
+    });
+  }
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({
+        errors: err,
+      });
+    }
+    req.user = user;
+    next();
+  });
 };

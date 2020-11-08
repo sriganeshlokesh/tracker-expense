@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { register, login, logout } = require("../../controllers/auth");
+const { register, login, logout, token } = require("../../controllers/auth");
 
 // @route POST /api/auth/register
 // @desc Register user route
@@ -12,9 +12,14 @@ router.post("/register", register);
 // @access Public
 router.post("/login", login);
 
-// @route POST /api/auth/logout
+// @route GET /api/auth/logout
 // @desc Logout user route
 // @access Public
 router.get("/logout", logout);
+
+// @route GET /api/auth/token
+// @desc refresh token user route
+// @access Public
+router.post("/token", token);
 
 module.exports = router;
