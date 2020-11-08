@@ -6,6 +6,7 @@ const app = express();
 require("dotenv").config();
 const PORT = 5000 || process.env.PORT;
 const auth = require("./routes/api/auth");
+const budget = require("./routes/api/budget");
 
 // Body Parser Middleware
 app.use(express.json());
@@ -32,7 +33,9 @@ app.use(morgan("dev"));
 // Cookie Parsor Middleware
 app.use(cookieParser());
 
+// Route Middleware
 app.use("/api/auth", auth);
+app.use("/api/budget", budget);
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");

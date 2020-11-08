@@ -122,13 +122,3 @@ exports.isAuth = (req, res, next) => {
   }
   next();
 };
-
-// Admin Authentication
-exports.isAdmin = (req, res, next) => {
-  if (req.profile.role == 0) {
-    return res.status(403).json({
-      errors: "Access Denied. Admin Only",
-    });
-  }
-  next();
-};
