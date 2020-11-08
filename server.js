@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const app = express();
+const compression = require("compression");
 require("dotenv").config();
 const PORT = 5000 || process.env.PORT;
 const auth = require("./routes/api/auth");
@@ -27,6 +28,9 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+// Compression Middlware
+app.use(compression());
 
 // Morgan Middleware
 app.use(morgan("dev"));
