@@ -1,0 +1,134 @@
+const Expense = require("../models/Expense");
+
+// Get Expense By Id - Middleware
+exports.expenseById = (req, res, next, id) => {
+  Expense.findById(id).exec((err, expense) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Expense not found",
+      });
+    }
+    req.expense = expense;
+    next();
+  });
+};
+
+// Get an Expense
+exports.getExpense = (req, res) => {
+  Expense.findOne({ user: req.params.id, _id: req.expense._id }).then(
+    (expense) => {
+      if (!expense) {
+        return res.status(400).json({
+          errors: "Expense Not Found",
+        });
+      } else {
+        return res.json(expense);
+      }
+    }
+  );
+};
+
+// Create an Expense
+exports.createExpense = (req, res) => {
+  Expense.findOne({ user: req.params.id, name: req.body.name }).then(
+    (expense) => {
+      if (expense) {
+        return res.status(400).json({
+          errors: "Expense Already Exists",
+        });
+      } else {
+        const expense = new Expense({
+          name: req.body.name,
+          expense: req.body.expense,
+          budget: req.body.budget,
+          user: req.params.id,
+        });
+        expense
+          .save()
+          .then((expense) => {
+            if (!expense) {
+              return res.status(400).json({
+                errors: "Budget not created",
+              });
+            } else {
+              return res.json(expense);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  );
+};
+
+// Update Expense
+exports.updateExpense = (req, res) => {
+  Expense.findOne({ user: req.params.id, name: req.body.name }).then(
+    (expense) => {
+      if (expense) {
+        return res.status(400).json({
+          errors: "Expense Already Exists",
+        });
+      } else {
+        Expense.updateOne(
+          { _id: req.expense._id },
+          req.body,
+          (err, expense) => {
+            if (err) {
+              return res.status(400).json({
+                errors: "Expense not updated",
+              });
+            }
+            return res.json(expense);
+          }
+        );
+      }
+    }
+  );
+};
+
+// Delete Expense
+exports.deleteExpense = (req, res) => {
+  const expense = req.expense;
+  expense.deleteOne((err, expense) => {
+    if (err) {
+      return res.status(400).json({
+        errors: "Expense not deleted",
+      });
+    }
+    return res.json({
+      message: "Expense Deleted",
+    });
+  });
+};
+
+// Get all Expenses
+exports.getAllExpenses = (req, res) => {
+  let errors = {};
+  let order = req.query.order ? req.query.order : "asc";
+  Expense.find({ user: req.params.id })
+    .populate("budget")
+    .sort([[order]])
+    .exec((err, expenses) => {
+      if (err) {
+        errors.expense = "Expense not found";
+        return res.status(400).json(errors);
+      }
+      return res.json(expenses);
+    });
+};
+
+// Get all Expenses based on Budget
+exports.expenseBudget = (req, res) => {
+  let errors = {};
+  let order = req.query.order ? req.query.order : "asc";
+  Expense.find({ user: req.params.id, budget: req.params.budgetId })
+    .populate("budget")
+    .sort([[order]])
+    .exec((err, expenses) => {
+      if (err) {
+        errors.expense = "Expense not found";
+        return res.status(400).json(errors);
+      }
+      return res.json(expenses);
+    });
+};

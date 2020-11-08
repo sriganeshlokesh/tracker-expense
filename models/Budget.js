@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const budgetSchema = mongoose.Schema(
   {
@@ -6,7 +7,6 @@ const budgetSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
       maxlength: 32,
     },
     budget: {
@@ -15,6 +15,11 @@ const budgetSchema = mongoose.Schema(
     },
     month: {
       type: String,
+      required: true,
+    },
+    user: {
+      type: ObjectId,
+      ref: "User",
       required: true,
     },
   },

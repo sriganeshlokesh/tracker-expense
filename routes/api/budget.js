@@ -15,7 +15,7 @@ const { userById } = require("../../controllers/user");
 // @route GET /api/budget/:budgetId
 // @desc Get budget route
 // @access Private
-router.get("/:budgetId", getBudget);
+router.get("/:budgetId/:id", protect, isAuth, getBudget);
 
 // @route POST /api/budget/create
 // @desc Create budget route
@@ -35,7 +35,7 @@ router.delete("/:budgetId/:id", protect, isAuth, deleteBudget);
 // @route GET /api/budget/all/budget
 // @desc Get all budget route
 // @access Public
-router.get("/all/budget", getAllBudgets);
+router.get("/all/budget/:id", protect, isAuth, getAllBudgets);
 
 // @route PARAM id
 // @desc Get User By Id

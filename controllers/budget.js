@@ -1,6 +1,4 @@
 const Budget = require("../models/Budget");
-const dot = require("dot-object");
-const { json } = require("express");
 
 // Get Budget By Id - Middleware
 exports.budgetById = (req, res, next, id) => {
@@ -17,37 +15,51 @@ exports.budgetById = (req, res, next, id) => {
 
 // Get a Budget
 exports.getBudget = (req, res) => {
-  return res.json(req.budget);
+  Budget.findOne({ user: req.profile._id, _id: req.budget._id }).then(
+    (budget) => {
+      if (!budget) {
+        return res.status(400).json({
+          errors: "Budget Not Found",
+        });
+      } else {
+        return res.json(budget);
+      }
+    }
+  );
 };
 
 // Create a Budget
 exports.createBudget = (req, res) => {
   const today = new Date();
-  Budget.findOne({ name: req.body.name }).then((budget) => {
-    if (budget) {
-      return res.status(400).json({
-        errors: "Budget Already Exists",
-      });
-    } else {
-      const budget = new Budget({
-        name: req.body.name,
-        budget: req.body.budget,
-        month: today.toLocaleString("default", { month: "long" }),
-      });
-      budget
-        .save()
-        .then((budget) => {
-          if (!budget) {
-            return res.status(400).json({
-              errors: "Budget not created",
-            });
-          } else {
-            return res.json(budget);
-          }
-        })
-        .catch((err) => console.log(err));
+  console.log(req.body.name);
+  Budget.findOne({ user: req.params.id, name: req.body.name }).then(
+    (budget) => {
+      if (budget) {
+        return res.status(400).json({
+          errors: "Budget Already Exists",
+        });
+      } else {
+        const budget = new Budget({
+          name: req.body.name,
+          budget: req.body.budget,
+          user: req.params.id,
+          month: today.toLocaleString("default", { month: "long" }),
+        });
+        budget
+          .save()
+          .then((budget) => {
+            if (!budget) {
+              return res.status(400).json({
+                errors: "Budget not created",
+              });
+            } else {
+              return res.json(budget);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     }
-  });
+  );
 };
 
 // Update Budget
@@ -87,7 +99,7 @@ exports.deleteBudget = (req, res) => {
 
 // Get all Budgets
 exports.getAllBudgets = (req, res) => {
-  Budget.find().exec((err, budgets) => {
+  Budget.find({ user: req.params.id }).exec((err, budgets) => {
     if (err) {
       return res.status(400).json({
         errors: err,
