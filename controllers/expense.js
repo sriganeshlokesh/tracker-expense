@@ -1,4 +1,5 @@
 const Expense = require("../models/Expense");
+const Budget = require("../models/Budget");
 
 // Get Expense By Id - Middleware
 exports.expenseById = (req, res, next, id) => {
@@ -135,4 +136,42 @@ exports.expenseBudget = (req, res) => {
       }
       return res.json(expenses);
     });
+};
+
+// Increase Budget Capacity after Adding Expense
+exports.increaseCapacity = (req, res, next) => {
+  Budget.findOne({ _id: req.body.budget }).then((data) => {
+    console.log(data);
+    const id = req.body.budget;
+    Budget.updateOne(
+      { _id: id },
+      { $inc: { capacity: req.body.expense } }
+    ).then((data) => {
+      if (!data) {
+        return res.status(400).json({
+          errors: "Not Updated",
+        });
+      }
+      next();
+    });
+  });
+};
+
+// Increase Budget Capacity after Adding Expense
+exports.decreaseCapacity = (req, res, next) => {
+  const expense = req.expense;
+  const budgetId = expense.budget;
+  Budget.findOne({ _id: budgetId }).then((data) => {
+    Budget.updateOne(
+      { _id: budgetId },
+      { $inc: { capacity: -expense.expense } }
+    ).then((data) => {
+      if (!data) {
+        return res.status(400).json({
+          errors: "Not Updated",
+        });
+      }
+      next();
+    });
+  });
 };

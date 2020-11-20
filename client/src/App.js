@@ -10,6 +10,8 @@ import Home from "./components/landing/Home";
 import Dashboard from "./components/dashboard/Dashboard";
 import AddBudget from "./components/add_budget/AddBudget";
 import AddExpense from "./components/add_expense/AddExpense";
+import Budgets from "./components/budgets/Budgets";
+import Expenses from "./components/expenses/Expenses";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <PrivateRoute path="/user/dashboard" exact component={Dashboard} />
           <PrivateRoute path="/user/add/budget" exact component={AddBudget} />
           <PrivateRoute path="/user/add/expense" exact component={AddExpense} />
+          <PrivateRoute path="/user/budgets" exact component={Budgets} />
+          <PrivateRoute path="/user/expenses" exact component={Expenses} />
         </Switch>
         <Footer />
       </div>

@@ -9,6 +9,8 @@ const {
   deleteExpense,
   getAllExpenses,
   expenseBudget,
+  increaseCapacity,
+  decreaseCapacity,
 } = require("../../controllers/expense");
 const { protect, isAuth, authToken } = require("../../controllers/auth");
 const { userById } = require("../../controllers/user");
@@ -21,7 +23,14 @@ router.get("/:expenseId/:id", protect, isAuth, authToken, getExpense);
 // @route POST /api/expense/create
 // @desc Create expense route
 // @access Private
-router.post("/create/:id", protect, isAuth, authToken, createExpense);
+router.post(
+  "/create/:id",
+  protect,
+  isAuth,
+  authToken,
+  increaseCapacity,
+  createExpense
+);
 
 // @route PUT /api/expense/:expenseId/:id
 // @desc Update expense route
@@ -31,7 +40,14 @@ router.put("/:expenseId/:id", protect, isAuth, authToken, updateExpense);
 // @route DELETE /api/expense/:expenseId/:id
 // @desc Delete expense route
 // @access Private
-router.delete("/:expenseId/:id", protect, isAuth, authToken, deleteExpense);
+router.delete(
+  "/:expenseId/:id",
+  protect,
+  isAuth,
+  authToken,
+  decreaseCapacity,
+  deleteExpense
+);
 
 // @route GET /api/expense/all/expense
 // @desc Get all expense route

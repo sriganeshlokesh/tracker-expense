@@ -49,3 +49,33 @@ export const addExpense = (id, data, token) => {
       }
     });
 };
+
+// Get All Expenses
+export const getAllExpenses = (id, token) => {
+  return axios
+    .get(`/api/expense/all/expense/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
+// Delete Expense
+export const deleteExpense = (id, expenseId, token) => {
+  return axios
+    .delete(`/api/expense/${expenseId}/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return {
+        success: true,
+      };
+    })
+    .catch((err) => console.log(err));
+};
