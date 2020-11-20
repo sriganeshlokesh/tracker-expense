@@ -8,6 +8,8 @@ import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import Home from "./components/landing/Home";
 import Dashboard from "./components/dashboard/Dashboard";
+import AddBudget from "./components/add_budget/AddBudget";
+import AddExpense from "./components/add_expense/AddExpense";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <PrivateRoute path="/user/dashboard" exact component={Dashboard} />
+          <PrivateRoute path="/user/add/budget" exact component={AddBudget} />
+          <PrivateRoute path="/user/add/expense" exact component={AddExpense} />
         </Switch>
         <Footer />
       </div>

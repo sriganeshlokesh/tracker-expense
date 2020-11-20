@@ -8,7 +8,7 @@ let refreshTokens = [];
 
 // Generate Access Token
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "180s" });
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1w" });
 };
 
 // Register User

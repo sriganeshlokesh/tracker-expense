@@ -48,13 +48,17 @@ exports.createExpense = (req, res) => {
           .then((expense) => {
             if (!expense) {
               return res.status(400).json({
-                errors: "Budget not created",
+                errors: "Expense not created",
               });
             } else {
               return res.json(expense);
             }
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            return res.status(400).json({
+              errors: err,
+            });
+          });
       }
     }
   );

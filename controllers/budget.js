@@ -31,7 +31,6 @@ exports.getBudget = (req, res) => {
 // Create a Budget
 exports.createBudget = (req, res) => {
   const today = new Date();
-  console.log(req.body.name);
   Budget.findOne({ user: req.params.id, name: req.body.name }).then(
     (budget) => {
       if (budget) {
@@ -43,7 +42,7 @@ exports.createBudget = (req, res) => {
           name: req.body.name,
           budget: req.body.budget,
           user: req.params.id,
-          month: today.toLocaleString("default", { month: "long" }),
+          month: req.body.month,
         });
         budget
           .save()

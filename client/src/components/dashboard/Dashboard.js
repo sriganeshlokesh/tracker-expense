@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import SideNav from "../layouts/sidenav/SideNav";
 import { isAuthenticated } from "../../actions/auth";
 import "./styles.css";
 
@@ -9,33 +11,7 @@ const Dashboard = () => {
     <div className="container">
       <section class="dashboard">
         <div class="side-nav">
-          <ul>
-            <a href="/dashboard.html">
-              <li>
-                <i class="fas fa-tachometer-alt"></i>Dashboard
-              </li>
-            </a>
-            <a href="/budgets.html">
-              <li>
-                <i class="fas fa-cubes"></i>Budgets
-              </li>
-            </a>
-            <a href="/expenses.html">
-              <li>
-                <i class="fas fa-wallet"></i>Expenses
-              </li>
-            </a>
-            <a href="/add_budget.html">
-              <li>
-                <i class="fas fa-money-bill"></i>Add Budget
-              </li>
-            </a>
-            <a href="/add-expense.html">
-              <li>
-                <i class="fas fa-dollar-sign"></i>Add Expense
-              </li>
-            </a>
-          </ul>
+          <SideNav />
         </div>
         <div class="dashboard-content">
           <div class="dashboard-heading">
