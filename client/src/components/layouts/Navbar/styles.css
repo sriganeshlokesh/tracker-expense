@@ -1,13 +1,13 @@
 .main-nav {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: 80px;
   padding: 20px 0;
   font-size: 13px;
 }
 
 .main-nav .logo {
-  width: 110px;
+  width: 80px;
 }
 
 .main-nav ul {
@@ -29,17 +29,42 @@
   margin-left: 20px;
 }
 
+.main-nav .right-menu {
+  font-size: 13px;
+}
+
 .btn {
   cursor: pointer;
   display: inline-block;
   border: 0;
   font-weight: bold;
   padding: 10px 20px;
-  background: #262626;
-  color: #fff;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  border-radius: 5px;
   font-size: 15px;
 }
 
 .btn:hover {
-  opacity: 0.9;
+  color: var(--secondary-color);
+  background-color: var(--text-color);
+  box-shadow: 0 0 0 2px var(--secondary-color);
+}
+
+.btn-2 {
+  cursor: pointer;
+  display: inline-block;
+  border: 0;
+  font-weight: bold;
+  padding: 10px 20px;
+  background: var(--text-color);
+  color: var(--secondary-color);
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.btn-2:hover {
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px var(--text-color);
 }

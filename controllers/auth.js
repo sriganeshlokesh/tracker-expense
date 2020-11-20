@@ -46,7 +46,7 @@ exports.register = (req, res) => {
           const accessToken = generateAccessToken(payload);
           const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN);
           refreshTokens.push(refreshToken);
-          res.cookie("token", token);
+          res.cookie("token", accessToken);
           // Return user and token to client
           const { _id, name, email } = user;
           return res.json({
@@ -83,7 +83,6 @@ exports.login = (req, res) => {
         errors.password = "Incorrect Password";
         return res.status(400).json(errors);
       }
-      console.log(user);
       // Generate a token for authentication
       const payload = {
         id: user._id,

@@ -1,8 +1,12 @@
 .footer {
-  background: #f2f2f2;
-  color: #616161;
+  background: var(--text-color);
+  color: var(--secondary-color);
   font-size: 12px;
   padding: 20px 0;
+
+  width: 100%;
+  flex-shrink: 0;
+  height: 60px; /* Height of the footer */
 }
 
 .footer-inner {
@@ -15,21 +19,25 @@
 }
 
 .footer div {
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
 }
 
 .footer div i {
   margin-right: 10px;
+  color: var(--secondary-color);
 }
 
 .footer ul {
   display: flex;
   flex-wrap: wrap;
+  color: var(--secondary-color);
 }
 
 .footer li {
   margin-right: 30px;
-  margin-bottom: 20px;
+}
+
+.footer li a {
+  color: var(--secondary-color);
 }

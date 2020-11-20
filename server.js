@@ -2,10 +2,11 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 const compression = require("compression");
 require("dotenv").config();
-const PORT = 5000 || process.env.PORT;
+const PORT = process.env.PORT || 5000;
 const auth = require("./routes/api/auth");
 const budget = require("./routes/api/budget");
 const expense = require("./routes/api/expense");
@@ -37,6 +38,9 @@ app.use(morgan("dev"));
 
 // Cookie Parsor Middleware
 app.use(cookieParser());
+
+// Cors Middleware
+app.use(cors());
 
 // Route Middleware
 app.use("/api/auth", auth);
