@@ -30,6 +30,58 @@ export const getBudgets = (id, token) => {
     .catch((err) => console.log(err));
 };
 
+export const getSomeBudgets = (id, token) => {
+  return axios
+    .get(`/api/budget/all/budget/${id}?limit=3`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getChartBudgets = (id, token) => {
+  return axios
+    .get(`/api/budget/month/chart/${id}?month=11&year=2020`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getBudgetChart = (id, token) => {
+  return axios
+    .get(`/api/budget/all/budget/${id}?order=desc&limit=5`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getChartExpenses = (id, token) => {
+  return axios
+    .get(`/api/expense/all/expense/${id}?limit=5&sortBy=expense&order=desc`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
 // Add Expense
 export const addExpense = (id, data, token) => {
   return axios
@@ -64,6 +116,20 @@ export const getAllExpenses = (id, token) => {
     .catch((err) => console.log(err));
 };
 
+// Get All Expenses
+export const getSomeExpenses = (id, token) => {
+  return axios
+    .get(`/api/expense/all/expense/${id}?limit=3`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => console.log(err));
+};
+
 // Delete Expense
 export const deleteExpense = (id, expenseId, token) => {
   return axios
@@ -76,6 +142,48 @@ export const deleteExpense = (id, expenseId, token) => {
       return {
         success: true,
       };
+    })
+    .catch((err) => console.log(err));
+};
+
+// Get Budget Total
+export const budgetTotal = (id, token) => {
+  return axios
+    .get(`/api/budget/sum/budget/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data[0].total;
+    })
+    .catch((err) => console.log(err));
+};
+
+// Get Expense Total
+export const expenseTotal = (id, token) => {
+  return axios
+    .get(`/api/expense/sum/expense/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data[0].total;
+    })
+    .catch((err) => console.log(err));
+};
+
+// Get Budget Based on Month
+export const monthlyBudget = (id, token) => {
+  return axios
+    .get(`/api/budget/month/budget/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      return res.data;
     })
     .catch((err) => console.log(err));
 };

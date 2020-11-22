@@ -110,9 +110,12 @@ exports.deleteExpense = (req, res) => {
 exports.getAllExpenses = (req, res) => {
   let errors = {};
   let order = req.query.order ? req.query.order : "asc";
+  let limit = req.query.limit && parseInt(req.query.limit);
+  let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
   Expense.find({ user: req.params.id })
     .populate("budget")
-    .sort([[order]])
+    .sort([[sortBy, order]])
+    .limit(limit)
     .exec((err, expenses) => {
       if (err) {
         errors.expense = "Expense not found";
@@ -174,4 +177,31 @@ exports.decreaseCapacity = (req, res, next) => {
       next();
     });
   });
+};
+
+// Get Expense Total
+exports.getTotal = (req, res) => {
+  Expense.aggregate(
+    [
+      {
+        $match: { user: req.profile._id },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$expense",
+          },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      return res.json(data);
+    }
+  );
 };

@@ -1,3 +1,5 @@
+@import url("semantic-ui-css/semantic.min.css");
+
 .dashboard .dashboard-content .budget-card {
   display: flex;
   flex-direction: column;

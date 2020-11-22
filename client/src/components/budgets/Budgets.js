@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import SideNav from "../layouts/sidenav/SideNav";
 import { getBudgets } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
@@ -41,6 +42,7 @@ const Budgets = () => {
                 <div class="col col-1">Budget Id</div>
                 <div class="col col-2">Budget Name</div>
                 <div class="col col-3">Budget Limit</div>
+                <div class="col col-3">Budget Month</div>
                 <div class="col col-4">Budget Status</div>
               </li>
               {budgets.map((budget, index) => (
@@ -54,7 +56,10 @@ const Budgets = () => {
                   <div class="col col-3" data-label="Amount">
                     ${budget.budget}
                   </div>
-                  <div class="col col-4" data-label="Payment Status">
+                  <div class="col col-4" data-label="Month">
+                    {moment(budget.month).format("MMMM")}
+                  </div>
+                  <div class="col col-5" data-label="Payment Status">
                     {budget.capacity < budget.budget ? "Good" : "Exceeded"}
                   </div>
                 </li>

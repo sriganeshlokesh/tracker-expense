@@ -3,7 +3,7 @@ import SideNav from "../layouts/sidenav/SideNav";
 import { getBudgets, addExpense } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 import { Message } from "semantic-ui-react";
-import "semantic-ui-css/semantic.min.css";
+import "./styles.css";
 
 const AddExpense = () => {
   const [budgets, setBudgets] = useState([]);

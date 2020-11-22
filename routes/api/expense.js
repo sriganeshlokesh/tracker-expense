@@ -10,6 +10,7 @@ const {
   getAllExpenses,
   expenseBudget,
   increaseCapacity,
+  getTotal,
   decreaseCapacity,
 } = require("../../controllers/expense");
 const { protect, isAuth, authToken } = require("../../controllers/auth");
@@ -64,6 +65,11 @@ router.get(
   authToken,
   expenseBudget
 );
+
+// @route GET /api/expense/sum/expense/:id
+// @desc Get expense sum route
+// @access Public
+router.get("/sum/expense/:id", protect, isAuth, authToken, getTotal);
 
 // @route PARAM id
 // @desc Get User By Id

@@ -46,7 +46,7 @@
 }
 
 .btn:hover {
-  color: var(--secondary-color);
+  color: var(--secondary-color) !important;
   background-color: var(--text-color);
   box-shadow: 0 0 0 2px var(--secondary-color);
 }
@@ -58,13 +58,13 @@
   font-weight: bold;
   padding: 10px 20px;
   background: var(--text-color);
-  color: var(--secondary-color);
+  color: var(--secondary-color) !important;
   border-radius: 5px;
   font-size: 15px;
 }
 
 .btn-2:hover {
-  color: var(--text-color);
+  color: var(--text-color) !important;
   background-color: var(--secondary-color);
   box-shadow: 0 0 0 2px var(--text-color);
 }

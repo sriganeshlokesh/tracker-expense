@@ -154,7 +154,6 @@ exports.protect = expressJwt({
 
 // User Authentication
 exports.isAuth = (req, res, next) => {
-  console.log(req.auth);
   let user = req.profile && req.auth && req.profile._id == req.auth.id;
   if (!user) {
     return res.status(403).json({

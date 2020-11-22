@@ -35,7 +35,7 @@
 
 .dashboard .dashboard-content .dashboard-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .dashboard .dashboard-content .dashboard-cards .card-content {
@@ -52,12 +52,12 @@
   text-align: left;
   background-color: rgb(255, 183, 3, 0.6);
   border-radius: 50%;
-  width: 70%;
+  width: 50%;
   text-align: center;
 }
 
 .dashboard .dashboard-content .dashboard-cards .card-content .icon-center i {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .dashboard .dashboard-content .dashboard-cards .card-content .card-body {
@@ -97,6 +97,7 @@
   margin-right: 10px;
   border-radius: 5px;
   text-align: center;
+  height: 500px;
   background-color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -104,8 +105,11 @@
 .dashboard .chart-cards .total-budget h1 {
   margin-top: 10px;
 }
-.dashboard .chart-cards .total-budget p {
-  width: 400px;
+.dashboard .chart-cards .total-budget .chart-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .dashboard .list-cards {
@@ -129,6 +133,7 @@
 }
 
 .dashboard .list-cards .list-content .list-table td {
+  text-align: center;
   padding: 10px 20px;
 }
 

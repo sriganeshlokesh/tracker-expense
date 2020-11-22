@@ -163,3 +163,31 @@
 .register-card .register-content .login-link {
   text-align: center;
 }
+
+input[type="text"] {
+  padding-top: 5px;
+  padding-left: 8px;
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+}
+
+input[type="email"] {
+  padding-top: 5px;
+  padding-left: 8px;
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+}
+
+input[type="number"] {
+  padding-top: 5px;
+  padding-left: 8px;
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+}
+
+input[type="password"] {
+  padding-top: 5px;
+  padding-left: 8px;
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+}

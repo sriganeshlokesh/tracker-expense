@@ -8,6 +8,9 @@ const {
   updateBudget,
   deleteBudget,
   getAllBudgets,
+  getTotal,
+  monthBudget,
+  getBudgetChart,
 } = require("../../controllers/budget");
 const { protect, isAuth, authToken } = require("../../controllers/auth");
 const { userById } = require("../../controllers/user");
@@ -36,6 +39,21 @@ router.delete("/:budgetId/:id", protect, isAuth, authToken, deleteBudget);
 // @desc Get all budget route
 // @access Public
 router.get("/all/budget/:id", protect, isAuth, authToken, getAllBudgets);
+
+// @route GET /api/budget/sum/:id
+// @desc Get budget sum route
+// @access Public
+router.get("/sum/budget/:id", protect, isAuth, authToken, getTotal);
+
+// @route GET /api/budget/month/:id
+// @desc Get budget based on month route
+// @access Public
+router.get("/month/budget/:id", protect, isAuth, authToken, monthBudget);
+
+// @route GET /api/budget/month/chart/:id
+// @desc Get budget based on month route
+// @access Public
+router.get("/month/chart/:id", protect, isAuth, authToken, getBudgetChart);
 
 // @route PARAM id
 // @desc Get User By Id

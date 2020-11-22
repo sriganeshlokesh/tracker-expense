@@ -39,5 +39,5 @@
 }
 
 .footer li a {
-  color: var(--secondary-color);
+  color: var(--secondary-color) !important;
 }

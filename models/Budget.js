@@ -14,7 +14,7 @@ const budgetSchema = mongoose.Schema(
       required: true,
     },
     month: {
-      type: String,
+      type: Date,
       required: true,
     },
     user: {

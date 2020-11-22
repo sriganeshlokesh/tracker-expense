@@ -1,11 +1,97 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import moment from "moment";
 import { Link } from "react-router-dom";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import SideNav from "../layouts/sidenav/SideNav";
+import BudgetChart from "../budget_chart/BudgetChart";
+import ExpenseChart from "../expense_chart/ExpenseChart";
+import BudgetBarChart from "../budget_barchart/BudgetBarChart";
+import MonthChart from "../month_chart/MonthChart";
+import {
+  getAllExpenses,
+  getBudgets,
+  budgetTotal,
+  expenseTotal,
+  getSomeExpenses,
+  getSomeBudgets,
+} from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 import "./styles.css";
 
 const Dashboard = () => {
-  const { user } = isAuthenticated();
+  const [expenses, setExpenses] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [budgetData, setBudgetData] = useState([]);
+  const [totalBudget, setTotalBudget] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+
+  const { user, token } = isAuthenticated();
+
+  const getExpenses = (id, token) => {
+    getAllExpenses(id, token)
+      .then((res) => {
+        setExpenses(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getExpensesData = (userId, token) => {
+    getSomeExpenses(userId, token)
+      .then((res) => {
+        setExpenseData(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getSomeBudgetData = (userId, token) => {
+    getSomeBudgets(userId, token)
+      .then((res) => {
+        setBudgetData(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getBudgetsData = (userId, token) => {
+    getBudgets(userId, token)
+      .then((res) => {
+        setBudgets(res);
+      })
+      .catch((err) => {
+        setBudgets({
+          error: err,
+        });
+      });
+  };
+
+  const getBudgetTotal = (userId, token) => {
+    budgetTotal(userId, token)
+      .then((res) => {
+        setTotalBudget(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getExpenseTotal = (userId, token) => {
+    expenseTotal(userId, token)
+      .then((res) => {
+        setTotalExpense(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const number = (totalExpense / totalBudget) * 100;
+  const percentage = Math.round((number * 10) / 10);
+
+  useEffect(() => {
+    getExpenses(user._id, token);
+    getBudgetsData(user._id, token);
+    getBudgetTotal(user._id, token);
+    getExpenseTotal(user._id, token);
+    getExpensesData(user._id, token);
+    getSomeBudgetData(user._id, token);
+  }, []);
 
   const dashboardLayout = () => (
     <div className="container">
@@ -25,7 +111,7 @@ const Dashboard = () => {
                 <i class="fas fa-cubes fa-2x"></i>
               </p>
               <div class="card-body">
-                <h3>5</h3>
+                <h3>{budgets.length}</h3>
                 <p>Budgets</p>
               </div>
             </div>
@@ -34,63 +120,102 @@ const Dashboard = () => {
                 <i class="fas fa-wallet fa-2x"></i>
               </p>
               <div class="card-body">
-                <h3>15</h3>
+                <h3>{expenses.length}</h3>
                 <p>Expenses</p>
               </div>
             </div>
-            <div class="card-content">
-              <p class="icon-center">
-                <i class="fas fa-calendar-week fa-2x"></i>
-              </p>
-              <div class="card-body">
-                <h3>20</h3>
-                <p>Days Left</p>
-              </div>
-            </div>
+
             <div class="card-content">
               <p class="icon-center">
                 <i class="fas fa-thermometer-half fa-2x"></i>
               </p>
               <div class="card-body">
-                <h3>Good</h3>
+                {budgetData.length > 0 ? (
+                  <h3>{totalBudget >= totalExpense ? "Good" : "Exceeded"}</h3>
+                ) : (
+                  <h3>No Status</h3>
+                )}
                 <p>Status</p>
               </div>
             </div>
           </div>
 
-          {/* <div class="budget-circle">
-            <div class="circle-content">
-              <h1>Budget</h1>
-              <p>
-                <canvas id="myChart" width="400" height="400"></canvas>
-              </p>
-            </div>
-          </div> */}
+          <div class="budget-circle">
+            {budgetData.length > 0 && expenseData.length > 0 ? (
+              <div class="circle-content">
+                <h1>Total Budget: ${totalBudget}</h1>
+                <p>
+                  <CircularProgressbar
+                    value={percentage}
+                    text={`Total Spent: ${percentage}%`}
+                    styles={buildStyles({
+                      textSize: "8px",
+                      pathColor: "#ffb703",
+                      textColor: "#023047",
+                    })}
+                  />
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h2>Budget/Expense Data not available</h2>
+                <h3>Add Budget & Expense</h3>
+              </div>
+            )}
+          </div>
 
           <div class="chart-cards">
             <div class="total-budget">
-              <h1>Top 10 Budgets</h1>
-              <p>
-                <canvas id="myChart" width="400" height="400"></canvas>
-              </p>
+              <h1>Top 5 Budgets</h1>
+              <div className="chart-content">
+                {budgetData.length > 0 ? (
+                  <BudgetChart />
+                ) : (
+                  <div>
+                    <h2>No Budget to Display</h2>
+                    <h3>Add Budget</h3>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div class="total-budget" id="budget">
+              <h1>Budget & Expenditure</h1>
+              <div className="chart-content">
+                {budgetData.length > 0 ? (
+                  <BudgetBarChart />
+                ) : (
+                  <div>
+                    <h2>No Budget/Expense to Display</h2>
+                    <h3>Add Budget & Expense</h3>
+                  </div>
+                )}
+              </div>
             </div>
             <div class="total-budget">
-              <h1>Top 10 Expenses</h1>
-              <p>
-                <canvas id="myChart" width="400" height="400"></canvas>
-              </p>
+              <h1>Monthly Budget</h1>
+              <div className="chart-content">
+                {budgetData.length > 0 ? (
+                  <MonthChart />
+                ) : (
+                  <div>
+                    <h2>No Budget/Expense to Display</h2>
+                    <h3>Add Budget & Expense</h3>
+                  </div>
+                )}
+              </div>
             </div>
             <div class="total-budget">
-              <h1>Budget Limit</h1>
-              <p>
-                <canvas id="myChart" width="400" height="400"></canvas>
-              </p>
-            </div>
-            <div class="total-budget">
-              <h1>Expense Comparision</h1>
-              <p>
-                <canvas id="myChart" width="400" height="400"></canvas>
-              </p>
+              <h1>Top 5 Expenses</h1>
+              <div className="chart-content">
+                {expenses.length > 0 ? (
+                  <ExpenseChart />
+                ) : (
+                  <div>
+                    <h2>No Expense to Display</h2>
+                    <h3>Add Expense</h3>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -98,82 +223,69 @@ const Dashboard = () => {
             <div class="list-content">
               <h3>Budgets</h3>
               <hr />
-              <table class="list-table">
-                <thead>
-                  <tr>
-                    <th>Budget ID</th>
-                    <th>Name</th>
-                    <th>Limit</th>
-                    <th>Left</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-                </tbody>
-              </table>
+              {budgetData.length > 0 ? (
+                <table class="list-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Limit</th>
+                      <th>Left</th>
+                      <th>Month</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {budgetData.map((budget, index) => (
+                      <tr key={index}>
+                        <td>{budget.name}</td>
+                        <td>{budget.budget}$</td>
+                        <td>{budget.budget - budget.capacity}$</td>
+                        <td>{moment(budget.month).format("MMMM")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <h3>Budget Data Not Available</h3>
+              )}
               <hr />
               <div class="list-tag">
-                <a href="#" class="list-link">
+                <Link to="/user/budgets" class="list-link">
                   View All Budgets<i class="fas fa-chevron-right"></i>
-                </a>
+                </Link>
               </div>
             </div>
             <div class="list-content">
               <h3>Expenses</h3>
               <hr />
-              <table class="list-table">
-                <thead>
-                  <tr>
-                    <th>Budget ID</th>
-                    <th>Name</th>
-                    <th>Limit</th>
-                    <th>Left</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-                  <tr>
-                    <td>INV-212312312</td>
-                    <td>Household</td>
-                    <td>200$</td>
-                    <td>100$</td>
-                  </tr>
-                </tbody>
-              </table>
+              {expenseData.length > 0 ? (
+                <table class="list-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Budget</th>
+                      <th>Amount</th>
+                      <th>Month</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseData.map((expense, index) => (
+                      <tr key={index}>
+                        <td>{expense.name}</td>
+                        <td>{expense.budget.name}</td>
+                        <td>{expense.expense}$</td>
+                        <td>{moment(expense.budget.month).format("MMMM")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <h3>Expense Data Not Available</h3>
+              )}
               <hr />
               <div class="list-tag">
-                <a href="#" class="list-link">
+                <Link to="/user/expenses" class="list-link">
                   View All Expenses<i class="fas fa-chevron-right"></i>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
