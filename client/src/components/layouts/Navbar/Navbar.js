@@ -1,11 +1,93 @@
 import React from "react";
+import moment from "moment";
+import jwt from "jsonwebtoken";
 import { Link, withRouter } from "react-router-dom";
-import { isAuthenticated, logout } from "../../../actions/auth";
+import {
+  isAuthenticated,
+  logout,
+  getNewAccessToken,
+  authenticate_access,
+} from "../../../actions/auth";
+import { Button, Header, Icon, Modal } from "semantic-ui-react";
+import "semantic-ui-css/semantic.min.css";
 import "./styles.css";
 
 const Navbar = ({ history }) => {
+  const [open, setOpen] = React.useState(false);
+
+  function expire() {
+    if (isAuthenticated()) {
+      const { token } = isAuthenticated();
+
+      let jwtToken = token.split(" ")[1];
+      jwt.verify(jwtToken, "budget is personal", function (err, decoded) {
+        if (err) {
+          window.location.reload(false);
+          logout(() => {
+            history.push("/");
+          });
+        } else {
+          let tokenExpiration = decoded.exp;
+          let tokenExpirationTimeInSeconds =
+            tokenExpiration - moment(Math.floor(Date.now() / 1000));
+          if (tokenExpiration && tokenExpirationTimeInSeconds === 20) {
+            console.log("Pop Up Should be displayed");
+            setOpen(true);
+          }
+        }
+      });
+    }
+  }
+
+  const getAccess = () => {
+    getNewAccessToken().then((data) => {
+      localStorage.removeItem("token");
+      authenticate_access(data, () => {
+        setOpen(false);
+      });
+    });
+  };
+
+  setTimeout(() => {
+    setInterval(() => {
+      expire();
+    }, 5000);
+  }, 10000);
+
   return (
     <div className="container">
+      <Modal
+        basic
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+        size="small"
+      >
+        <Header icon>
+          <Icon name="archive" />
+          JWT Expiration
+        </Header>
+        <Modal.Content>
+          <p>
+            JWT Token is About to Expire in 20 Seconds. Do you want to refresh
+            and continue using the Application?
+          </p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button
+            color="green"
+            inverted
+            onClick={() => {
+              getAccess();
+            }}
+          >
+            <Icon name="checkmark" /> Yes
+          </Button>
+          <Button basic color="red" inverted onClick={() => setOpen(false)}>
+            <Icon name="remove" /> No
+          </Button>
+        </Modal.Actions>
+      </Modal>
       <nav class="main-nav">
         <img
           src={process.env.PUBLIC_URL + "/assets/logo.png"}

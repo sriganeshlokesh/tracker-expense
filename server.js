@@ -47,10 +47,6 @@ app.use("/api/auth", auth);
 app.use("/api/budget", budget);
 app.use("/api/expense", expense);
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World</h1>");
-});
-
 app.listen(PORT, () => {
   console.log(`Server Listening at Port: ${PORT}`);
 });

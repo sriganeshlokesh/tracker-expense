@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import jwt from "jsonwebtoken";
 import PrivateRoute from "./actions/PrivateRoute";
 import Navbar from "./components/layouts/Navbar/Navbar";
 import Footer from "./components/layouts/Footer/Footer";
@@ -12,6 +13,7 @@ import AddBudget from "./components/add_budget/AddBudget";
 import AddExpense from "./components/add_expense/AddExpense";
 import Budgets from "./components/budgets/Budgets";
 import Expenses from "./components/expenses/Expenses";
+import { isAuthenticated, logout } from "./actions/auth";
 
 function App() {
   return (

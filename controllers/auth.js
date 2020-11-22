@@ -8,7 +8,7 @@ let refreshTokens = [];
 
 // Generate Access Token
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1w" });
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "60s" });
 };
 
 // Register User
@@ -44,7 +44,9 @@ exports.register = (req, res) => {
           };
           // Sign Token
           const accessToken = generateAccessToken(payload);
-          const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN);
+          const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN, {
+            expiresIn: "1w",
+          });
           refreshTokens.push(refreshToken);
           res.cookie("token", accessToken);
           // Return user and token to client
@@ -124,14 +126,17 @@ exports.token = (req, res) => {
         errors: err,
       });
     }
+    console.log(user);
     const accessToken = generateAccessToken({
       id: user.id,
       name: user.name,
       email: user.email,
     });
     res.cookie("token", accessToken);
+    const { id, name, email } = user;
     return res.json({
       success: true,
+      user: { id, name, email },
       token: `Bearer ${accessToken}`,
     });
   });
