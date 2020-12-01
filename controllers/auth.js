@@ -22,7 +22,7 @@ exports.register = (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       errors.email = "Email already registered";
-      return res.status(400).json(errors);
+      return res.status(403).json(errors);
     } else {
       const newUser = new User({
         name: req.body.name,
@@ -136,7 +136,7 @@ exports.token = (req, res) => {
     const { id, name, email } = user;
     return res.json({
       success: true,
-      user: { id, name, email },
+      user: { _id: id, name, email },
       token: `Bearer ${accessToken}`,
     });
   });

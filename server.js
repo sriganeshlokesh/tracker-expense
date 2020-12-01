@@ -6,7 +6,6 @@ const cors = require("cors");
 const app = express();
 const compression = require("compression");
 require("dotenv").config();
-const PORT = process.env.PORT || 5000;
 const auth = require("./routes/api/auth");
 const budget = require("./routes/api/budget");
 const expense = require("./routes/api/expense");
@@ -16,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to Database
+
 mongoose
   .connect(process.env.MONGO_DB, {
     useNewUrlParser: true,
@@ -47,6 +47,4 @@ app.use("/api/auth", auth);
 app.use("/api/budget", budget);
 app.use("/api/expense", expense);
 
-app.listen(PORT, () => {
-  console.log(`Server Listening at Port: ${PORT}`);
-});
+module.exports = app;
