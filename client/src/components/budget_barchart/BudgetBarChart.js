@@ -11,7 +11,6 @@ const BudgetBarChart = () => {
     title: [],
   });
   const month = new Date().getMonth();
-  console.log(month);
   const getChartBudget = (userId, token, month) => {
     getChartBudgets(userId, token, month)
       .then((res) => {

@@ -121,6 +121,7 @@ exports.getBudgetChart = (req, res) => {
   const year = parseInt(req.query.year);
   Budget.aggregate(
     [
+      { $limit: 5 },
       {
         $project: {
           doc: "$$ROOT",

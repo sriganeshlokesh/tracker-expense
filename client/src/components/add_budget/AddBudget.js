@@ -15,7 +15,7 @@ const AddBudget = () => {
     success: false,
   });
 
-  const { name, budget, month, errors, success } = budgetData;
+  const { name, budget, month, success } = budgetData;
   const { user, token } = isAuthenticated();
 
   const handleChange = (name) => (event) => {

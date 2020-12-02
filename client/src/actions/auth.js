@@ -1,26 +1,7 @@
 import axios from "axios";
 
-export const login = (user) => {
-  return axios
-    .post("/api/auth/login", user)
-    .then((res) => {
-      return res.data;
-    })
-    .catch((err) => console.log(err));
-};
-
-export const register = (user) => {
-  return axios
-    .post("/api/auth/register", user)
-    .then((res) => {
-      return res.data;
-    })
-    .catch((err) => console.log(err));
-};
-
 export const authenticate = (data, next) => {
   if (typeof window !== "undefined") {
-    console.log(data);
     localStorage.setItem("refresh", data.refresh);
     localStorage.setItem("token", JSON.stringify(data));
     next();
@@ -67,7 +48,6 @@ export const getNewAccessToken = () => {
         token: refresh,
       })
       .then((res) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((err) => console.log(err));

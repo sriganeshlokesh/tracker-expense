@@ -170,3 +170,21 @@ input[type="password"] {
   font-size: 14px;
   font-family: "Ubuntu", sans-serif;
 }
+
+/* Error */
+
+.form-group .invalid_feedback {
+  margin-top: -20px;
+}
+
+.form-group[data-error] input::after {
+  border-color: red;
+  color: red;
+  background-color: #fffafa;
+}
+
+.invalid_feedback[data-error]::after {
+  content: attr(data-error);
+  font-size: 0.8rem;
+  color: red;
+}

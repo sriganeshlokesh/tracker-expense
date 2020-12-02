@@ -11,7 +11,6 @@ const Expenses = () => {
   const getExpenses = (id, token) => {
     getAllExpenses(id, token)
       .then((res) => {
-        console.log(res);
         setExpenses(res);
       })
       .catch((err) => console.log(err));

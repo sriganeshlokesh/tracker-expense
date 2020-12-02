@@ -64,8 +64,6 @@ const AddExpense = () => {
     getBudgetsData(user._id, token);
   }, []);
 
-  console.log(error);
-
   const addExpenseLayout = () => (
     <div className="container">
       <section class="dashboard">

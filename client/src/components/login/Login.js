@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import classnames from "classnames";
-import { login, isAuthenticated, authenticate } from "../../actions/auth";
+import { isAuthenticated, authenticate } from "../../actions/auth";
 import "./styles.css";
 
 const Login = () => {
@@ -17,11 +18,11 @@ const Login = () => {
     setInput({ ...input, errors: false, [name]: event.target.value });
   };
 
-  const loginUser = (event) => {
-    event.preventDefault();
-    login({ email, password })
+  const login = (user) => {
+    return axios
+      .post("/api/auth/login", user)
       .then((res) => {
-        authenticate(res, () => {
+        authenticate(res.data, () => {
           setInput({
             ...input,
           });
@@ -30,6 +31,11 @@ const Login = () => {
       .catch((err) => {
         setInput({ ...input, errors: err.response.data });
       });
+  };
+
+  const loginUser = (event) => {
+    event.preventDefault();
+    login({ email, password });
   };
 
   const redirectUser = () => {
@@ -62,17 +68,17 @@ const Login = () => {
                 name="email"
                 onChange={handleChange("email")}
                 className={classnames("form-control", {
-                  "is-invalid": errors.email,
+                  invalid_feedback: errors.email,
                 })}
                 placeholder="Email"
                 required
               />
-              {errors.email && (
-                <div className="invalid-feedback">{errors.email}</div>
-              )}
               <label for="email" class="form-label">
                 Email
               </label>
+              {errors.email && (
+                <div class="invalid_feedback" data-error={errors.email}></div>
+              )}
             </div>
 
             <div class="form-group">
@@ -87,12 +93,15 @@ const Login = () => {
                 })}
                 required
               />
-              {errors.password && (
-                <div className="invalid-feedback">{errors.password}</div>
-              )}
               <label for="password" class="form-label">
                 Password
               </label>
+              {errors.password && (
+                <div
+                  class="invalid_feedback"
+                  data-error={errors.password}
+                ></div>
+              )}
             </div>
             <input type="submit" value="Login" class="submit-button" />
           </form>

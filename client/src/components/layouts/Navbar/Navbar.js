@@ -31,7 +31,6 @@ const Navbar = ({ history }) => {
           let tokenExpirationTimeInSeconds =
             tokenExpiration - moment(Math.floor(Date.now() / 1000));
           if (tokenExpiration && tokenExpirationTimeInSeconds === 20) {
-            console.log("Pop Up Should be displayed");
             setOpen(true);
           }
         }

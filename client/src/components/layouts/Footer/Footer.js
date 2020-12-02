@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { isAuthenticated } from "../../../actions/auth";
 import "./styles.css";
 
 class Footer extends Component {
@@ -12,9 +14,15 @@ class Footer extends Component {
               English (United States)
             </div>
             <ul>
-              <li>
-                <a href="">&copy; Personal Budget 2020</a>
-              </li>
+              {!isAuthenticated() ? (
+                <li>
+                  <Link to="/">&copy; Personal Budget 2020</Link>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/user/dashboard">&copy; Personal Budget 2020</Link>
+                </li>
+              )}
             </ul>
           </div>
         </footer>

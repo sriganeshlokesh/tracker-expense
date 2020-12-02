@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import classnames from "classnames";
-import { register, authenticate } from "../../actions/auth";
+import { authenticate } from "../../actions/auth";
 import "./styles.css";
 
 const Register = () => {
@@ -22,14 +23,23 @@ const Register = () => {
 
   const registerUser = (event) => {
     event.preventDefault();
-    register({ name, email, password, password2 }).then((res) => {
-      authenticate(res, () => {
-        setInput({
-          ...input,
-          redirect: true,
+    register({ name, email, password, password2 });
+  };
+
+  const register = (user) => {
+    return axios
+      .post("/api/auth/register", user)
+      .then((res) => {
+        authenticate(res, () => {
+          setInput({
+            ...input,
+            redirect: true,
+          });
         });
+      })
+      .catch((err) => {
+        setInput({ ...input, errors: err.response.data });
       });
-    });
   };
 
   const redirectUser = () => {
@@ -67,12 +77,15 @@ const Register = () => {
                 placeholder="Name"
                 required
               />
-              {errors.name && (
-                <div className="invalid-feedback">{errors.name}</div>
-              )}
               <label for="name" className="form-label">
                 Name
               </label>
+              {errors.name && (
+                <div
+                  className="invalid_register"
+                  data-error={errors.name}
+                ></div>
+              )}
             </div>
             <div className="form-group">
               <input
@@ -86,12 +99,15 @@ const Register = () => {
                 placeholder="Email"
                 required
               />
-              {errors.email && (
-                <div className="invalid-feedback">{errors.email}</div>
-              )}
               <label for="email" className="form-label">
                 Email
               </label>
+              {errors.email && (
+                <div
+                  className="invalid_register"
+                  data-error={errors.email}
+                ></div>
+              )}
             </div>
 
             <div className="form-group">
@@ -106,12 +122,15 @@ const Register = () => {
                 id="password"
                 required
               />
-              {errors.password && (
-                <div className="invalid-feedback">{errors.password}</div>
-              )}
               <label for="password" className="form-label">
                 Password
               </label>
+              {errors.password && (
+                <div
+                  className="invalid_register"
+                  data-error={errors.password}
+                ></div>
+              )}
             </div>
             <div class="form-group">
               <input
@@ -125,12 +144,15 @@ const Register = () => {
                 id="password2"
                 required
               />
-              {errors.password2 && (
-                <div className="invalid-feedback">{errors.password2}</div>
-              )}
               <label for="password2" className="form-label">
                 Confirm Password
               </label>
+              {errors.password2 && (
+                <div
+                  className="invalid_register"
+                  data-error={errors.password2}
+                ></div>
+              )}
             </div>
             <input type="submit" value="Register" className="submit-button" />
           </form>
