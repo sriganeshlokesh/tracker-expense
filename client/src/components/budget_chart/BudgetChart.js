@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
-import { getBudgetChart } from "../../actions/apiCore";
+import { getChartBudgets } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 
 const BudgetChart = () => {
@@ -9,16 +9,18 @@ const BudgetChart = () => {
     title: [],
     budget: [],
   });
-  const getChartBudget = (userId, token) => {
-    getBudgetChart(userId, token)
+
+  const month = new Date().getMonth();
+  const getChartBudget = (userId, token, month) => {
+    getChartBudgets(userId, token, month)
       .then((res) => {
         setChartBudget({
           ...chartBudget,
           title: res.map((data) => {
-            return data.name;
+            return data.doc.name;
           }),
           budget: res.map((data) => {
-            return data.budget;
+            return data.doc.budget;
           }),
         });
       })
@@ -44,7 +46,7 @@ const BudgetChart = () => {
   };
 
   useEffect(() => {
-    getChartBudget(user._id, token);
+    getChartBudget(user._id, token, month);
   }, []);
 
   return (

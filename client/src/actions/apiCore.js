@@ -43,9 +43,9 @@ export const getSomeBudgets = (id, token) => {
     .catch((err) => console.log(err));
 };
 
-export const getChartBudgets = (id, token) => {
+export const getChartBudgets = (id, token, month) => {
   return axios
-    .get(`/api/budget/month/chart/${id}?month=11&year=2020`, {
+    .get(`/api/budget/month/chart/${id}?month=${month}&year=2020`, {
       headers: {
         Authorization: token,
       },

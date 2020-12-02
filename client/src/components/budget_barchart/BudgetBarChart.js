@@ -10,8 +10,10 @@ const BudgetBarChart = () => {
     capacity: [],
     title: [],
   });
-  const getChartBudget = (userId, token) => {
-    getChartBudgets(userId, token)
+  const month = new Date().getMonth();
+  console.log(month);
+  const getChartBudget = (userId, token, month) => {
+    getChartBudgets(userId, token, month)
       .then((res) => {
         setChartBudget({
           ...chartBudget,
@@ -78,7 +80,7 @@ const BudgetBarChart = () => {
   }; // options
 
   useEffect(() => {
-    getChartBudget(user._id, token);
+    getChartBudget(user._id, token, month);
   }, []);
 
   return <Bar data={data} width={400} height={400} options={options} />;
