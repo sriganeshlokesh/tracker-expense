@@ -4,12 +4,12 @@
   "description": "Personal Budget Application",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "cross-env NODE_ENV=test mocha timeout 5000 __tests__/server/**/*.test.js",
-    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 5000 __tests__/server/**/*.test.js",
-    "text-report": "cross-env NODE_ENV=test nyc --reporter=text-summary mocha --timeout 5000 __tests__/server/**/*.test.js",
-    "nyc": "cross-env NODE_ENV=test nyc mocha --timeout 5000 __tests__/server/**/*.test.js"
+    "client-install": "npm install --prefix client",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true npm install --prefix client && npm run build --prefix client"
   },
   "author": "Sriganesh Lokesh",
   "license": "MIT",
