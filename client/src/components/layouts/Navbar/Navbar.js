@@ -22,10 +22,10 @@ const Navbar = ({ history }) => {
       let jwtToken = token.split(" ")[1];
       jwt.verify(jwtToken, "budget is personal", function (err, decoded) {
         if (err) {
-          window.location.reload(false);
           logout(() => {
             history.push("/");
           });
+          window.location.reload();
         } else {
           let tokenExpiration = decoded.exp;
           let tokenExpirationTimeInSeconds =
