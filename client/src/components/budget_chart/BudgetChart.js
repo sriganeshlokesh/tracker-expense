@@ -4,23 +4,23 @@ import { getChartBudgets } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 
 const BudgetChart = () => {
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
   const [chartBudget, setChartBudget] = useState({
     title: [],
     budget: [],
   });
 
-  const month = new Date().getMonth();
-  const getChartBudget = (userId, token, month) => {
-    getChartBudgets(userId, token, month)
+  const month = new Date().getMonth() + 1;
+  const getChartBudget = (token, month) => {
+    getChartBudgets(token, month)
       .then((res) => {
         setChartBudget({
           ...chartBudget,
           title: res.map((data) => {
-            return data.doc.name;
+            return data.name;
           }),
           budget: res.map((data) => {
-            return data.doc.budget;
+            return data.budget;
           }),
         });
       })
@@ -46,7 +46,7 @@ const BudgetChart = () => {
   };
 
   useEffect(() => {
-    getChartBudget(user._id, token, month);
+    getChartBudget(token, month);
   }, []);
 
   return (

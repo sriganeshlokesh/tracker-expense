@@ -16,7 +16,7 @@ exports.expenseById = (req, res, next, id) => {
 
 // Get an Expense
 exports.getExpense = (req, res) => {
-  Expense.findOne({ user: req.params.id, _id: req.expense._id }).then(
+  Expense.findOne({ user: req.user.id, _id: req.expense._id }).then(
     (expense) => {
       if (!expense) {
         return res.status(400).json({
@@ -31,7 +31,7 @@ exports.getExpense = (req, res) => {
 
 // Create an Expense
 exports.createExpense = (req, res) => {
-  Expense.findOne({ user: req.params.id, name: req.body.name }).then(
+  Expense.findOne({ user: req.user.id, name: req.body.name }).then(
     (expense) => {
       if (expense) {
         return res.status(400).json({
@@ -42,7 +42,7 @@ exports.createExpense = (req, res) => {
           name: req.body.name,
           expense: req.body.expense,
           budget: req.body.budget,
-          user: req.params.id,
+          user: req.user.id,
         });
         expense
           .save()
@@ -67,7 +67,7 @@ exports.createExpense = (req, res) => {
 
 // Update Expense
 exports.updateExpense = (req, res) => {
-  Expense.findOne({ user: req.params.id, name: req.body.name }).then(
+  Expense.findOne({ user: req.user.id, name: req.body.name }).then(
     (expense) => {
       if (expense) {
         return res.status(400).json({
@@ -112,7 +112,7 @@ exports.getAllExpenses = (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let limit = req.query.limit && parseInt(req.query.limit);
   let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
-  Expense.find({ user: req.params.id })
+  Expense.find({ user: req.user.id })
     .populate("budget")
     .sort([[sortBy, order]])
     .limit(limit)
@@ -129,7 +129,7 @@ exports.getAllExpenses = (req, res) => {
 exports.expenseBudget = (req, res) => {
   let errors = {};
   let order = req.query.order ? req.query.order : "asc";
-  Expense.find({ user: req.params.id, budget: req.params.budgetId })
+  Expense.find({ user: req.user.id, budget: req.params.budgetId })
     .populate("budget")
     .sort([[order]])
     .exec((err, expenses) => {
@@ -144,7 +144,6 @@ exports.expenseBudget = (req, res) => {
 // Increase Budget Capacity after Adding Expense
 exports.increaseCapacity = (req, res, next) => {
   Budget.findOne({ _id: req.body.budget }).then((data) => {
-    console.log(data);
     const id = req.body.budget;
     Budget.updateOne(
       { _id: id },
@@ -181,27 +180,12 @@ exports.decreaseCapacity = (req, res, next) => {
 
 // Get Expense Total
 exports.getTotal = (req, res) => {
-  Expense.aggregate(
-    [
-      {
-        $match: { user: req.profile._id },
-      },
-      {
-        $group: {
-          _id: null,
-          total: {
-            $sum: "$expense",
-          },
-        },
-      },
-    ],
-    (err, data) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      return res.json(data);
-    }
-  );
+  Expense.find({
+    $expr: {
+      $gt: ["$expense", 0],
+    },
+    user: req.user.id,
+  }).then((data) => {
+    return res.json(data);
+  });
 };

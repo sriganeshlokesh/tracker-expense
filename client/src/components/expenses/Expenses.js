@@ -6,10 +6,10 @@ import "./styles.css";
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
 
-  const getExpenses = (id, token) => {
-    getAllExpenses(id, token)
+  const getExpenses = (token) => {
+    getAllExpenses(token)
       .then((res) => {
         setExpenses(res);
       })
@@ -17,7 +17,7 @@ const Expenses = () => {
   };
 
   useEffect(() => {
-    getExpenses(user._id, token);
+    getExpenses(token);
   }, []);
 
   const expensesLayout = () => (
@@ -58,8 +58,8 @@ const Expenses = () => {
                     class="col col-5"
                     data-label="Payment Status"
                     onClick={() => {
-                      deleteExpense(user._id, expense._id, token).then(() => {
-                        getExpenses(user._id, token);
+                      deleteExpense(expense._id, token).then(() => {
+                        getExpenses(token);
                       });
                     }}
                   >

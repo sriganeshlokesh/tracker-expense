@@ -4,13 +4,13 @@ import { getChartExpenses } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 
 const ExpenseChart = () => {
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
   const [chartExpense, setChartExpense] = useState({
     title: [],
     expense: [],
   });
-  const getChartExpense = (userId, token) => {
-    getChartExpenses(userId, token)
+  const getChartExpense = (token) => {
+    getChartExpenses(token)
       .then((res) => {
         setChartExpense({
           ...chartExpense,
@@ -43,7 +43,7 @@ const ExpenseChart = () => {
   };
 
   useEffect(() => {
-    getChartExpense(user._id, token);
+    getChartExpense(token);
   }, []);
 
   return (

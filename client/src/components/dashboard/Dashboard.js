@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import SideNav from "../layouts/sidenav/SideNav";
 import BudgetChart from "../budget_chart/BudgetChart";
@@ -11,8 +10,6 @@ import MonthChart from "../month_chart/MonthChart";
 import {
   getAllExpenses,
   getBudgets,
-  budgetTotal,
-  expenseTotal,
   getSomeExpenses,
   getSomeBudgets,
 } from "../../actions/apiCore";
@@ -24,37 +21,35 @@ const Dashboard = () => {
   const [budgets, setBudgets] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [budgetData, setBudgetData] = useState([]);
-  const [totalBudget, setTotalBudget] = useState(0);
-  const [totalExpense, setTotalExpense] = useState(0);
 
   const { user, token } = isAuthenticated();
 
-  const getExpenses = (id, token) => {
-    getAllExpenses(id, token)
+  const getExpenses = (token) => {
+    getAllExpenses(token)
       .then((res) => {
         setExpenses(res);
       })
       .catch((err) => console.log(err));
   };
 
-  const getExpensesData = (userId, token) => {
-    getSomeExpenses(userId, token)
+  const getExpensesData = (token) => {
+    getSomeExpenses(token)
       .then((res) => {
         setExpenseData(res);
       })
       .catch((err) => console.log(err));
   };
 
-  const getSomeBudgetData = (userId, token) => {
-    getSomeBudgets(userId, token)
+  const getSomeBudgetData = (token) => {
+    getSomeBudgets(token)
       .then((res) => {
         setBudgetData(res);
       })
       .catch((err) => console.log(err));
   };
 
-  const getBudgetsData = (userId, token) => {
-    getBudgets(userId, token)
+  const getBudgetsData = (token) => {
+    getBudgets(token)
       .then((res) => {
         setBudgets(res);
       })
@@ -65,32 +60,11 @@ const Dashboard = () => {
       });
   };
 
-  const getBudgetTotal = (userId, token) => {
-    budgetTotal(userId, token)
-      .then((res) => {
-        setTotalBudget(res);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const getExpenseTotal = (userId, token) => {
-    expenseTotal(userId, token)
-      .then((res) => {
-        setTotalExpense(res);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const number = (totalExpense / totalBudget) * 100;
-  const percentage = Math.round((number * 10) / 10);
-
   useEffect(() => {
-    getExpenses(user._id, token);
-    getBudgetsData(user._id, token);
-    getBudgetTotal(user._id, token);
-    getExpenseTotal(user._id, token);
-    getExpensesData(user._id, token);
-    getSomeBudgetData(user._id, token);
+    getExpenses(token);
+    getBudgetsData(token);
+    getExpensesData(token);
+    getSomeBudgetData(token);
   }, []);
 
   const dashboardLayout = () => (
@@ -130,38 +104,10 @@ const Dashboard = () => {
                 <i class="fas fa-thermometer-half fa-2x"></i>
               </p>
               <div class="card-body">
-                {budgetData.length > 0 ? (
-                  <h3>{totalBudget >= totalExpense ? "Good" : "Exceeded"}</h3>
-                ) : (
-                  <h3>No Status</h3>
-                )}
-                <p>Status</p>
+                <h3>{moment(new Date().getMonth()).format("MMMM")}</h3>
+                <p>Month</p>
               </div>
             </div>
-          </div>
-
-          <div class="budget-circle">
-            {budgetData.length > 0 && expenseData.length > 0 ? (
-              <div class="circle-content">
-                <h1>Total Budget: ${totalBudget}</h1>
-                <p>
-                  <CircularProgressbar
-                    value={percentage}
-                    text={`Total Spent: ${percentage}%`}
-                    styles={buildStyles({
-                      textSize: "8px",
-                      pathColor: "#ffb703",
-                      textColor: "#023047",
-                    })}
-                  />
-                </p>
-              </div>
-            ) : (
-              <div>
-                <h2>Budget/Expense Data not available</h2>
-                <h3>Add Budget & Expense</h3>
-              </div>
-            )}
           </div>
 
           <div class="chart-cards">

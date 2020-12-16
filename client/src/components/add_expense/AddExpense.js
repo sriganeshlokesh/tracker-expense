@@ -14,10 +14,10 @@ const AddExpense = () => {
     error: "",
     success: false,
   });
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
 
-  const getBudgetsData = (userId, token) => {
-    getBudgets(userId, token)
+  const getBudgetsData = (token) => {
+    getBudgets(token)
       .then((res) => {
         setBudgets(res);
       })
@@ -37,7 +37,7 @@ const AddExpense = () => {
   const addExpenses = (event) => {
     event.preventDefault();
     event.target.reset();
-    addExpense(user._id, { name, expense, budget }, token).then((res) => {
+    addExpense({ name, expense, budget }, token).then((res) => {
       setExpenseData({
         name: "",
         budget: "",
@@ -61,7 +61,7 @@ const AddExpense = () => {
   );
 
   useEffect(() => {
-    getBudgetsData(user._id, token);
+    getBudgetsData(token);
   }, []);
 
   const addExpenseLayout = () => (

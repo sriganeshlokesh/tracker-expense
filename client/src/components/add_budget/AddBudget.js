@@ -16,7 +16,7 @@ const AddBudget = () => {
   });
 
   const { name, budget, month, success } = budgetData;
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
 
   const handleChange = (name) => (event) => {
     setBudgetData({ ...budgetData, errors: false, [name]: event.target.value });
@@ -25,7 +25,8 @@ const AddBudget = () => {
   async function addBudgetData(event) {
     event.preventDefault();
     event.target.reset();
-    await addBudget(user._id, { name, budget, month }, token).then((res) => {
+    console.log(token);
+    await addBudget({ name, budget, month }, token).then((res) => {
       setBudgetData({
         name: "",
         budget: "",

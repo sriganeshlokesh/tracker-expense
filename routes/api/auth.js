@@ -1,13 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  register,
-  login,
-  logout,
-  token,
-  protect,
-  isAuth,
-} = require("../../controllers/auth");
+const { register, login, logout, token } = require("../../controllers/auth");
 
 // @route POST /api/auth/register
 // @desc Register user route

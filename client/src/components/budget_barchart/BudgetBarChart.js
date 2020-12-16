@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import { getChartBudgets } from "../../actions/apiCore";
+import { getLineChart } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 
 const BudgetBarChart = () => {
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
   const [chartBudget, setChartBudget] = useState({
     budget: [],
     capacity: [],
     title: [],
   });
-  const month = new Date().getMonth();
-  const getChartBudget = (userId, token, month) => {
-    getChartBudgets(userId, token, month)
+  const month = new Date().getMonth() + 1;
+  const getChartBudget = (token, month) => {
+    getLineChart(token, month)
       .then((res) => {
         setChartBudget({
           ...chartBudget,
           budget: res.map((data) => {
-            return data.doc.budget;
+            return data.budget;
           }),
           capacity: res.map((data) => {
-            return data.doc.capacity;
+            return data.capacity;
           }),
           title: res.map((data) => {
-            return data.doc.name;
+            return data.name;
           }),
         });
       })
@@ -79,7 +79,7 @@ const BudgetBarChart = () => {
   }; // options
 
   useEffect(() => {
-    getChartBudget(user._id, token, month);
+    getChartBudget(token, month);
   }, []);
 
   return <Bar data={data} width={400} height={400} options={options} />;

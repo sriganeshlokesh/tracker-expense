@@ -1,4 +1,5 @@
 const Budget = require("../models/Budget");
+const mongoose = require("mongoose");
 
 // Get Budget By Id - Middleware
 exports.budgetById = (req, res, next, id) => {
@@ -15,24 +16,21 @@ exports.budgetById = (req, res, next, id) => {
 
 // Get a Budget
 exports.getBudget = (req, res) => {
-  Budget.findOne({ user: req.profile._id, _id: req.budget._id }).then(
-    (budget) => {
-      if (!budget) {
-        return res.status(400).json({
-          errors: "Budget Not Found",
-        });
-      } else {
-        return res.json(budget);
-      }
+  Budget.findOne({ user: req.user.id, _id: req.budget._id }).then((budget) => {
+    if (!budget) {
+      return res.status(400).json({
+        errors: "Budget Not Found",
+      });
+    } else {
+      return res.json(budget);
     }
-  );
+  });
 };
 
 // Create a Budget
 exports.createBudget = (req, res) => {
-  const today = new Date();
   Budget.findOne({
-    user: req.params.id,
+    user: req.user.id,
     name: req.body.name,
     month: req.body.month,
   }).then((budget) => {
@@ -44,7 +42,7 @@ exports.createBudget = (req, res) => {
       const budget = new Budget({
         name: req.body.name,
         budget: req.body.budget,
-        user: req.params.id,
+        user: req.user.id,
         month: req.body.month,
       });
       budget
@@ -103,7 +101,7 @@ exports.getAllBudgets = (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let limit = req.query.limit && parseInt(req.query.limit);
   let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
-  Budget.find({ user: req.params.id })
+  Budget.find({ user: req.user.id })
     .sort([[sortBy, order]])
     .limit(limit)
     .exec((err, budgets) => {
@@ -117,65 +115,35 @@ exports.getAllBudgets = (req, res) => {
 };
 
 exports.getBudgetChart = (req, res) => {
-  const month = parseInt(req.query.month);
-  const year = parseInt(req.query.year);
-  Budget.aggregate(
-    [
-      { $limit: 5 },
-      {
-        $project: {
-          doc: "$$ROOT",
-          year: { $year: "$month" },
-          month: { $month: "$month" },
-        },
-      },
-      { $match: { month: month, year: year } },
-    ],
-    (err, budgets) => {
-      if (err) {
-        return res.status(400).json({
-          errors: err,
-        });
-      }
-      return res.json(budgets);
-    }
-  );
+  Budget.find({
+    $expr: {
+      $eq: [{ $month: "$month" }, parseInt(req.query.month)],
+    },
+    user: req.user.id,
+  })
+    .limit(5)
+    .sort({ budget: -1 })
+    .then((data) => {
+      return res.json(data);
+    });
 };
 
 // Get Budget Total
 exports.getTotal = (req, res) => {
-  Budget.aggregate(
-    [
-      {
-        $match: { user: req.profile._id },
-      },
-      {
-        $group: {
-          _id: null,
-          total: {
-            $sum: "$budget",
-          },
-        },
-      },
-    ],
-    (err, data) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      return res.json(data);
-    }
-  );
+  Budget.find({
+    $expr: {
+      $gt: ["$budget", 0],
+    },
+    user: req.user.id,
+  }).then((data) => {
+    return res.json(data);
+  });
 };
 
 // Budget & Expense Based on Month
 exports.monthBudget = (req, res) => {
   Budget.aggregate(
     [
-      {
-        $match: { user: req.profile._id },
-      },
       {
         $group: {
           _id: { $month: "$month" },
@@ -194,4 +162,18 @@ exports.monthBudget = (req, res) => {
       return res.json(data);
     }
   );
+};
+
+// Budget & Expense Based on Month
+exports.getBudgetLine = (req, res) => {
+  Budget.find({
+    $expr: {
+      $eq: [{ $month: "$month" }, parseInt(req.query.month)],
+    },
+    user: req.user.id,
+  })
+    .limit(5)
+    .then((data) => {
+      return res.json(data);
+    });
 };

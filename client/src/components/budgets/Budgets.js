@@ -8,10 +8,10 @@ import "./styles.css";
 const Budgets = () => {
   const [budgets, setBudgets] = useState([]);
 
-  const { user, token } = isAuthenticated();
+  const { token } = isAuthenticated();
 
-  const getBudgetsData = (userId, token) => {
-    getBudgets(userId, token)
+  const getBudgetsData = (token) => {
+    getBudgets(token)
       .then((res) => {
         setBudgets(res);
       })
@@ -23,7 +23,7 @@ const Budgets = () => {
   };
 
   useEffect(() => {
-    getBudgetsData(user._id, token);
+    getBudgetsData(token);
   }, []);
 
   const budgetsLayout = () => (

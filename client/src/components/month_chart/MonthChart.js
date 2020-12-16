@@ -1,97 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { HorizontalBar } from "react-chartjs-2";
-import { monthlyBudget } from "../../actions/apiCore";
+import { Line } from "react-chartjs-2";
+import { getLineChart } from "../../actions/apiCore";
 import { isAuthenticated } from "../../actions/auth";
 
 const MonthChart = () => {
-  const [month, setMonth] = useState([]);
-  const { user, token } = isAuthenticated();
+  const [budgets, setBudgets] = useState({
+    title: [],
+    budget: [],
+  });
+  const { token } = isAuthenticated();
 
-  const getMonthlyBudget = (userId, token) => {
-    monthlyBudget(userId, token)
+  // const { budget } = months;
+  const month = new Date().getMonth() + 1;
+  const getMonthlyBudget = (token, month) => {
+    getLineChart(token, month)
       .then((res) => {
-        setMonth(res);
+        setBudgets({
+          ...budgets,
+          title: res.map((data) => {
+            return data.name;
+          }),
+          budget: res.map((data) => {
+            return data.budget;
+          }),
+        });
       })
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    getMonthlyBudget(user._id, token);
-  }, []);
-
-  let monthlyData = Array.from(Array(12)).fill(0);
-  month.map((item, i) => {
-    monthlyData[parseInt(item._id) - 1] = parseInt(item.total);
-  });
-
   const data = {
-    labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
+    labels: budgets.title,
     datasets: [
       {
-        label: "Monthly Budget",
-        backgroundColor: [
-          "#FF8811",
-          "#542344",
-          "#2E933C",
-          "#FE5F55",
-          "#473BF0",
-          "#ECD444",
-          "#CC4BC2",
-          "#55286F",
-          "#6D98BA",
-          "#00FFE7",
-          "#475B63",
-          "#774936",
-        ],
-        borderColor: "#fff",
-        borderWidth: 1,
-        hoverBackgroundColor: [
-          "#FF8811",
-          "#542344",
-          "#2E933C",
-          "#FE5F55",
-          "#473BF0",
-          "#ECD444",
-          "#CC4BC2",
-          "#55286F",
-          "#6D98BA",
-          "#00FFE7",
-          "#475B63",
-          "#774936",
-        ],
-        hoverBorderColor: "#FFF",
-        data: monthlyData,
+        label: "Budget Category",
+        data: budgets.budget,
+        fill: true,
+        backgroundColor: "rgba(75,192,192,0.2)",
+        borderColor: "rgba(75,192,192,1)",
       },
     ],
   };
 
-  return (
-    <HorizontalBar
-      data={data}
-      width={400}
-      height={400}
-      options={{
-        legend: {
-          display: false,
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-      }}
-    />
-  );
+  useEffect(() => {
+    getMonthlyBudget(token, month);
+  }, []);
+
+  return <Line data={data} width={400} height={300} />;
 };
 
 export default MonthChart;

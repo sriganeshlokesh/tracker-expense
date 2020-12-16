@@ -8,7 +8,7 @@ let refreshTokens = [];
 
 // Generate Access Token
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "60s" });
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1w" });
 };
 
 // Register User
@@ -158,20 +158,21 @@ exports.protect = expressJwt({
 });
 
 // User Authentication
-exports.isAuth = (req, res, next) => {
-  let user = req.profile && req.auth && req.profile._id == req.auth.id;
-  if (!user) {
-    return res.status(403).json({
-      errors: "Access Denied! Unauthorized User",
-    });
-  }
-  next();
-};
+// exports.isAuth = (req, res, next) => {
+//   let user = req.profile && req.auth && req.profile._id == req.auth.id;
+//   if (!user) {
+//     return res.status(403).json({
+//       errors: "Access Denied! Unauthorized User",
+//     });
+//   }
+//   next();
+// };
 
 // Token Authentication
 exports.authToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
+  console.log(token);
   if (!token) {
     return res.status(401).json({
       errors: "Token expired",

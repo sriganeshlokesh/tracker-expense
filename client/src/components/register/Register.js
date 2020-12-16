@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import classnames from "classnames";
-import { authenticate } from "../../actions/auth";
+import { authenticateRegister } from "../../actions/auth";
 import "./styles.css";
 
 const Register = () => {
@@ -30,7 +30,7 @@ const Register = () => {
     return axios
       .post("/api/auth/register", user)
       .then((res) => {
-        authenticate(res, () => {
+        authenticateRegister(res, () => {
           setInput({
             ...input,
             redirect: true,

@@ -7,6 +7,14 @@ export const authenticate = (data, next) => {
     next();
   }
 };
+export const authenticateRegister = (data, next) => {
+  if (typeof window !== "undefined") {
+    console.log(data.data);
+    localStorage.setItem("refresh", data.data.refresh);
+    localStorage.setItem("token", JSON.stringify(data.data));
+    next();
+  }
+};
 
 export const authenticate_access = (data, next) => {
   localStorage.setItem("token", JSON.stringify(data));
@@ -48,6 +56,7 @@ export const getNewAccessToken = () => {
         token: refresh,
       })
       .then((res) => {
+        console.log(res.data);
         return res.data;
       })
       .catch((err) => console.log(err));
