@@ -57,6 +57,14 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+app.get("*", (req, res) => {
+  let url = path.join(__dirname, "../client/build", "index.html");
+  if (!url.startsWith("/app/"))
+    // since we're on local windows
+    url = url.substring(1);
+  res.sendFile(url);
+});
+
 // Static Middleware
 app.use(express.static("public"));
 
