@@ -9,6 +9,7 @@ require("dotenv").config();
 const auth = require("./routes/api/auth");
 const budget = require("./routes/api/budget");
 const expense = require("./routes/api/expense");
+const path = require("path");
 const PORT = process.env.PORT || 5000;
 
 // Body Parser Middleware
