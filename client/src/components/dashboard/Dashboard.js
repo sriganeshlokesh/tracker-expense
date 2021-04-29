@@ -104,7 +104,7 @@ const Dashboard = () => {
                 <i class="fas fa-thermometer-half fa-2x"></i>
               </p>
               <div class="card-body">
-                <h3>{moment(new Date().getMonth()).format("MMMM")}</h3>
+                <h3>{moment().format("MMMM")}</h3>
                 <p>Month</p>
               </div>
             </div>

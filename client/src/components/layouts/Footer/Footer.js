@@ -16,11 +16,11 @@ class Footer extends Component {
             <ul>
               {!isAuthenticated() ? (
                 <li>
-                  <Link to="/">&copy; Personal Budget 2020</Link>
+                  <Link to="/">&copy; Personal Budget 2021</Link>
                 </li>
               ) : (
                 <li>
-                  <Link to="/user/dashboard">&copy; Personal Budget 2020</Link>
+                  <Link to="/user/dashboard">&copy; Personal Budget 2021</Link>
                 </li>
               )}
             </ul>
